@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AprendIA Chiapas - Programa Educativo Gratuito</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="config.js"></script>
     <style>
         :root {
             /* Colores Principales */
@@ -1039,27 +1040,40 @@
             button.style.background = 'linear-gradient(135deg, #7b5733, #8d4a5b)';
             
             try {
-                // Detectar si estamos en producción o desarrollo
-                const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-                const apiUrl = isProduction ? 'https://aprendia-api.onrender.com/api' : 'http://localhost:3000/api';
+                // Usar URL de producción directamente (para testing)
+                const apiUrl = CONFIG.forceProduction();
+                const fullUrl = `${apiUrl}${CONFIG.endpoints.register}`;
+                console.log('🌐 Usando API (forzada):', apiUrl);
+                console.log('🔗 URL completa:', fullUrl);
                 
-                const response = await fetch(`${apiUrl}/register`, {
+                const requestData = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    municipality: formData.get('municipality'),
+                    education: formData.get('education')
+                };
+                
+                console.log('📤 Datos a enviar:', requestData);
+                
+                const response = await fetch(fullUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify({
-                        name: formData.get('name'),
-                        email: formData.get('email'),
-                        municipality: formData.get('municipality'),
-                        education: formData.get('education')
-                    })
+                    body: JSON.stringify(requestData)
                 });
                 
-                const result = await response.json();
+                console.log('📊 Status de respuesta:', response.status);
+                console.log('📋 Headers de respuesta:', response.headers);
                 
-                if (result.success) {
+                console.log('📥 Respuesta recibida, parseando JSON...');
+                const result = await response.json();
+                console.log('📋 Resultado completo:', result);
+                
+                if (response.ok && result.success) {
                     // Éxito
+                    console.log('✅ Registro exitoso');
                     button.textContent = '¡Registro Exitoso!';
                     button.style.background = 'linear-gradient(135deg, #1c6b50, #8d4a5b)';
                     
@@ -1076,23 +1090,69 @@
                     }, 3000);
                 } else {
                     // Error del servidor
-                    throw new Error(result.message || 'Error en el registro');
+                    console.log('❌ Error del servidor:', result);
+                    throw new Error(result.message || `Error del servidor: ${response.status}`);
                 }
                 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('💥 Error completo:', error);
+                console.error('💥 Error message:', error.message);
+                console.error('💥 Error stack:', error.stack);
+                
+                // Determinar tipo de error
+                let errorMessage = 'Error al registrar. Por favor, intenta nuevamente.';
+                
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'Error de conexión. Verifica que la API esté funcionando.';
+                } else if (error.message.includes('CORS')) {
+                    errorMessage = 'Error de CORS. Verifica la configuración del servidor.';
+                } else if (error.message.includes('404')) {
+                    errorMessage = 'Endpoint no encontrado. Verifica la URL de la API.';
+                } else if (error.message.includes('500')) {
+                    errorMessage = 'Error interno del servidor. Intenta más tarde.';
+                }
                 
                 // Mostrar error
                 button.textContent = 'Error en Registro';
                 button.style.background = 'linear-gradient(135deg, #ba1a1a, #8d4a5b)';
                 
-                showNotification('Error al registrar. Por favor, intenta nuevamente.', 'error');
+                showNotification(errorMessage, 'error');
                 
                 setTimeout(() => {
                     button.textContent = originalText;
                     button.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
                     button.disabled = false;
                 }, 3000);
+            }
+        });
+        
+        // Función para probar conexión con la API
+        async function testApiConnection() {
+            try {
+                const apiUrl = CONFIG.forceProduction();
+                console.log('🔍 Probando conexión con API (forzada):', apiUrl);
+                
+                const response = await fetch(`${apiUrl}${CONFIG.endpoints.health}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('✅ API conectada correctamente:', result.message);
+                    return true;
+                } else {
+                    console.log('❌ API respondió con error:', result.message);
+                    return false;
+                }
+            } catch (error) {
+                console.log('💥 Error conectando con API:', error.message);
+                return false;
+            }
+        }
+        
+        // Probar conexión al cargar la página
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isConnected = await testApiConnection();
+            if (!isConnected) {
+                console.warn('⚠️ No se pudo conectar con la API. Verifica la configuración.');
             }
         });
         
