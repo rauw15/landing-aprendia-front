@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AprendIA Chiapas - Programa Educativo Gratuito</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Colores Principales */
+            --primary: #8d4a5b;
+            --on-primary: #ffffff;
+            --secondary: #1c6b50;
+            --on-secondary: #ffffff;
+            --tertiary: #7b5733;
+            --on-tertiary: #ffffff;
+            
+            /* Colores de Error */
+            --error: #ba1a1a;
+            --on-error: #ffffff;
+            
+            /* Contenedores */
+            --primary-container: #ffd9e0;
+            --on-primary-container: #713344;
+            --secondary-container: #a7f2d0;
+            --on-secondary-container: #00513a;
+            --tertiary-container: #ffdcbe;
+            --on-tertiary-container: #60401e;
+            --error-container: #ffdad6;
+            --on-error-container: #93000a;
+            
+            /* Superficies */
+            --surface-dim: #e7d6d8;
+            --surface: #fff8f7;
+            --surface-bright: #fff8f7;
+            --inverse-surface: #382e30;
+            --surface-container-lowest: #ffffff;
+            --surface-container-low: #fff0f2;
+            --surface-container: #fbeaec;
+            --surface-container-high: #f5e4e6;
+            --surface-container-highest: #efdee0;
+            
+            /* Textos */
+            --on-surface: #22191b;
+            --on-surface-variant: #514346;
+            --outline: #847376;
+            --outline-variant: #d6c2c5;
+            --inverse-on-surface: #feedef;
+            --inverse-primary: #ffb1c3;
+            
+            /* Otros */
+            --scrim: #000000;
+            --shadow: #000000;
+            
+            /* Tipografía */
+            --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            line-height: 1.6;
+            color: var(--on-surface);
+            background-color: var(--surface);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header con navegación */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--on-primary);
+            text-decoration: none;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--on-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            opacity: 0.9;
+        }
+        
+        .nav-links a:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section - El Primer Impacto */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 120px 0 100px;
+            text-align: center;
+            color: var(--on-primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--on-primary), var(--inverse-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideInUp 1s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+        
+        .hero-image {
+            max-width: 500px;
+            margin: 0 auto 3rem;
+            animation: slideInUp 1s ease-out 0.6s both;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        /* CTA Principal */
+        .cta-primary {
+            display: inline-block;
+            background: var(--on-primary);
+            color: var(--primary);
+            padding: 20px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            animation: slideInUp 1s ease-out 0.9s both;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+
+        /* Cuerpo de la Página - Persuasión */
+        .benefits {
+            padding: 100px 0;
+            background: var(--surface);
+        }
+
+        .benefits h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--on-surface);
+            margin-bottom: 1rem;
+        }
+        
+        .benefits .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--on-surface-variant);
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .benefit-card {
+            background: var(--surface-container-lowest);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid var(--outline-variant);
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        
+        .benefit-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        
+        .benefit-card h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--on-surface);
+        }
+        
+        .benefit-card p {
+            color: var(--on-surface-variant);
+            line-height: 1.7;
+        }
+        
+        /* Acerca de */
+        .about {
+            padding: 100px 0;
+            background: var(--surface);
+        }
+
+        .about h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--on-surface);
+            margin-bottom: 1rem;
+        }
+
+        .about .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--on-surface-variant);
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 1.5rem;
+        }
+        
+        .about-text p {
+            font-size: 1.1rem;
+            color: var(--on-surface-variant);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .university-info {
+            background: var(--surface-container);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--primary);
+            margin-top: 2rem;
+        }
+
+        .university-info h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 1rem;
+        }
+
+        .university-info p {
+            color: var(--on-surface-variant);
+            margin-bottom: 0;
+        }
+
+        .about-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface-container-lowest);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--outline-variant);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--on-surface-variant);
+            font-weight: 500;
+        }
+
+        /* Motor de Conversión */
+        .conversion {
+            background: linear-gradient(135deg, var(--secondary-container) 0%, var(--primary-container) 100%);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .conversion h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--on-surface);
+            margin-bottom: 1rem;
+        }
+
+        .conversion p {
+            font-size: 1.2rem;
+            color: var(--on-surface-variant);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-container {
+            background: var(--surface-container-lowest);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--on-surface);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--outline-variant);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: var(--surface);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--outline-variant);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: var(--surface);
+            cursor: pointer;
+        }
+
+        .cta-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--on-primary);
+            padding: 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Garantías y Sellos de Confianza */
+        .trust-section {
+            background: var(--surface);
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .trust-badge {
+            background: var(--surface-container);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            border: 2px solid var(--outline-variant);
+            font-weight: 500;
+            color: var(--on-surface);
+        }
+
+        .guarantee {
+            font-size: 1.1rem;
+            color: var(--on-surface-variant);
+            margin-bottom: 1rem;
+        }
+
+        .privacy-notice {
+            font-size: 0.9rem;
+            color: var(--on-surface-variant);
+            opacity: 0.8;
+        }
+        
+        /* Pie de Página */
+        .footer {
+            background: var(--inverse-surface);
+            color: var(--inverse-on-surface);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--inverse-on-surface);
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .benefits h2 {
+                font-size: 2.2rem;
+            }
+            
+            .form-container {
+                padding: 2rem;
+                margin: 0 1rem;
+            }
+            
+            .trust-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            /* Acerca de responsivo */
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .about-stats {
+                flex-direction: row;
+                justify-content: space-around;
+            }
+
+            .stat-card {
+                flex: 1;
+                margin: 0 0.5rem;
+            }
+
+            /* Carrusel responsivo */
+            .hero-carousel {
+                max-width: 100%;
+                margin: 0 auto 2rem;
+                padding: 0 1rem;
+            }
+
+            .carousel-container {
+                height: 300px;
+                background: transparent;
+            }
+
+            .carousel-slide img {
+                border-radius: 12px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-carousel {
+                padding: 0 0.5rem;
+            }
+
+            .carousel-container {
+                height: 250px;
+                background: transparent;
+            }
+
+            .carousel-slide img {
+                border-radius: 10px;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            }
+
+            .carousel-dots {
+                margin-top: 0.8rem;
+            }
+
+            .dot {
+                width: 10px;
+                height: 10px;
+            }
+
+            /* Acerca de móvil pequeño */
+            .about-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                margin: 0;
+            }
+
+            .about h2 {
+                font-size: 2.2rem;
+            }
+
+            .about-text h3 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .hero-carousel {
+                max-width: 700px;
+            }
+
+            .carousel-container {
+                height: 450px;
+            }
+        }
+
+        /* Carrusel de imágenes */
+        .hero-carousel {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            background: transparent;
+        }
+        
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .dot:hover {
+            background: rgba(255,255,255,0.8);
+            transform: scale(1.1);
+        }
+
+        .dot.active {
+            background: var(--on-primary);
+            border-color: var(--on-primary);
+            transform: scale(1.2);
+        }
+
+        /* Indicadores de carga suave */
+        .carousel-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .carousel-container:hover::before {
+            opacity: 1;
+        }
+
+        /* Animaciones de entrada */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabecera (El Primer Impacto) -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">AprendIA</a>
+            <ul class="nav-links">
+                    <li><a href="#benefits">Beneficios</a></li>
+                    <li><a href="#about">Acerca de</a></li>
+                    <li><a href="#conversion">Registro</a></li>
+            </ul>
+        </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Educación Digital Gratuita para Chiapas</h1>
+            <p class="subtitle">Programa educativo del Gobierno de Chiapas que utiliza inteligencia artificial para democratizar el acceso a la educación de calidad. Aprende a tu ritmo, sin costo alguno.</p>
+            
+            <div class="hero-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide active">
+                        <img src="/assets/Login-removebg-preview.png" alt="Login">
+            </div>
+                    <div class="carousel-slide">
+                        <img src="/assets/analisis-removebg-preview.png" alt="Lecciones">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="/assets/resultados-removebg-preview.png" alt="Progreso Personalizado">
+                    </div>
+                </div>
+                <div class="carousel-dots">
+                    <span class="dot active" onclick="currentSlide(1)"></span>
+                    <span class="dot" onclick="currentSlide(2)"></span>
+                    <span class="dot" onclick="currentSlide(3)"></span>
+                </div>
+            </div>
+            
+            <a href="#conversion" class="cta-primary">Registrarse Gratis</a>
+        </div>
+    </section>
+
+    <!-- Cuerpo de la Página (Persuasión) -->
+    <section id="benefits" class="benefits">
+        <div class="container">
+            <h2>¿Por qué elegir AprendIA Chiapas?</h2>
+            <p class="subtitle">Programa educativo gratuito respaldado por el Gobierno de Chiapas</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon">IA</div>
+                    <h3>Completamente Gratuito</h3>
+                    <p>Programa educativo financiado por el Gobierno de Chiapas. Sin costos ocultos, sin suscripciones, acceso total gratuito para todos los chiapanecos.</p>
+            </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon">ED</div>
+                    <h3>Educación Personalizada</h3>
+                    <p>Inteligencia artificial que se adapta a tu nivel y ritmo de aprendizaje. Contenido educativo diseñado específicamente para las necesidades de Chiapas.</p>
+                </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon">CH</div>
+                    <h3>Contenido Local</h3>
+                    <p>Material educativo que incluye la historia, cultura y realidad de Chiapas. Aprende sobre tu estado mientras desarrollas nuevas habilidades.</p>
+                </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon">CE</div>
+                    <h3>Certificación Oficial</h3>
+                    <p>Certificados avalados por la Secretaría de Educación de Chiapas. Reconocimiento oficial que respalda tus conocimientos y habilidades.</p>
+                </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon">AC</div>
+                    <h3>Acceso Universal</h3>
+                    <p>Disponible en todas las regiones de Chiapas. Funciona sin internet estable, diseñado para las condiciones locales del estado.</p>
+                </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon">AP</div>
+                    <h3>Apoyo Comunitario</h3>
+                    <p>Centros de apoyo en cada municipio. Facilitadores locales que te ayudan a aprovechar al máximo la plataforma educativa.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acerca de -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>Acerca de Nosotros</h2>
+            <p class="subtitle">Conoce al equipo detrás de AprendIA Chiapas</p>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Estudiantes de la Universidad Politécnica de Chiapas</h3>
+                    <p>Somos un equipo de estudiantes apasionados por la tecnología y la educación, pertenecientes a la Universidad Politécnica de Chiapas. Nuestra misión es democratizar el acceso a la educación de calidad utilizando las más avanzadas tecnologías de inteligencia artificial.</p>
+                    
+                    <p>Como estudiantes de ingeniería y tecnología, hemos desarrollado AprendIA como parte de nuestro compromiso con el desarrollo educativo de nuestro estado. Creemos que la educación debe ser accesible, personalizada y efectiva para todos los chiapanecos.</p>
+                    
+                    <div class="university-info">
+                        <h4>Universidad Politécnica de Chiapas</h4>
+                        <p>Institución educativa comprometida con la formación de profesionales de excelencia y el desarrollo tecnológico de la región. Nuestro proyecto AprendIA es un ejemplo de cómo la academia puede contribuir al bienestar social.</p>
+                </div>
+                        </div>
+                
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Estudiantes Involucrados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Meses de Desarrollo</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Gratuito para Chiapas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Motor de Conversión -->
+    <section id="conversion" class="conversion">
+        <div class="container">
+            <h2>Regístrate al Programa Educativo</h2>
+            <p>Únete a miles de chiapanecos que ya están aprendiendo con AprendIA</p>
+            
+            <div class="form-container">
+                <form id="conversionForm">
+                    <div class="form-group">
+                        <label for="name">Nombre completo</label>
+                        <input type="text" id="name" name="name" required>
+                </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" name="email" required>
+                </div>
+                    
+                    <div class="form-group">
+                        <label for="municipality">Municipio de residencia</label>
+                        <select id="municipality" name="municipality" required>
+                            <option value="">Selecciona tu municipio</option>
+                            <option value="tuxtla">Tuxtla Gutiérrez</option>
+                            <option value="san-cristobal">San Cristóbal de las Casas</option>
+                            <option value="tapachula">Tapachula</option>
+                            <option value="palenque">Palenque</option>
+                            <option value="comitan">Comitán</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                </div>
+                    
+                    <div class="form-group">
+                        <label for="education">Nivel educativo</label>
+                        <select id="education" name="education" required>
+                            <option value="">Selecciona tu nivel</option>
+                            <option value="primaria">Primaria</option>
+                            <option value="secundaria">Secundaria</option>
+                            <option value="preparatoria">Preparatoria</option>
+                            <option value="universidad">Universidad</option>
+                            <option value="posgrado">Posgrado</option>
+                        </select>
+                </div>
+                    
+                    <button type="submit" class="cta-button">
+                        Registrarse al Programa
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Garantías y Sellos de Confianza -->
+    <section class="trust-section">
+        <div class="container">
+            <div class="trust-badges">
+                <div class="trust-badge">Gobierno de Chiapas</div>
+                <div class="trust-badge">100% Gratuito</div>
+                <div class="trust-badge">Sin Costos Ocultos</div>
+            </div>
+            
+            <p class="guarantee">Programa educativo oficial del Gobierno de Chiapas</p>
+            <p class="privacy-notice">Al registrarte, aceptas nuestra <a href="#" style="color: var(--primary);">Política de Privacidad</a> y <a href="#" style="color: var(--primary);">Términos de Servicio</a>. Tu información está protegida por la ley de transparencia del estado.</p>
+        </div>
+    </section>
+
+    <!-- Pie de Página -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">Política de Privacidad</a>
+                <a href="#">Términos y Condiciones</a>
+                <a href="#">Contacto</a>
+                <a href="#">Soporte</a>
+            </div>
+            <p class="copyright">&copy; 2024 Gobierno de Chiapas - AprendIA. Programa educativo gratuito para el desarrollo del estado.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Carrusel de imágenes
+        let currentSlideIndex = 0;
+        let carouselInterval;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.dot');
+
+        function showSlide(index) {
+            // Ocultar todas las slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            // Mostrar la slide actual
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+            showSlide(currentSlideIndex);
+        }
+
+        function currentSlide(index) {
+            currentSlideIndex = index - 1;
+            showSlide(currentSlideIndex);
+            // Reiniciar el auto-avance cuando el usuario interactúa
+            clearInterval(carouselInterval);
+            carouselInterval = setInterval(nextSlide, 4000);
+        }
+
+        function startCarousel() {
+            carouselInterval = setInterval(nextSlide, 4000);
+        }
+
+        function stopCarousel() {
+            clearInterval(carouselInterval);
+        }
+
+        // Pausar carrusel al hacer hover
+        const carouselContainer = document.querySelector('.carousel-container');
+        if (carouselContainer) {
+            carouselContainer.addEventListener('mouseenter', stopCarousel);
+            carouselContainer.addEventListener('mouseleave', startCarousel);
+        }
+
+        // Iniciar carrusel
+        startCarousel();
+
+        // Animaciones de entrada
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos para animaciones
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Manejo del formulario
+        document.getElementById('conversionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const button = this.querySelector('.cta-button');
+            const originalText = button.textContent;
+            const formData = new FormData(this);
+            
+            // Mostrar estado de carga
+            button.textContent = 'Registrando...';
+            button.disabled = true;
+            button.style.background = 'linear-gradient(135deg, #7b5733, #8d4a5b)';
+            
+            try {
+                // Detectar si estamos en producción o desarrollo
+                const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+                const apiUrl = isProduction ? 'https://aprendia-api.onrender.com/api' : 'http://localhost:3000/api';
+                
+                const response = await fetch(`${apiUrl}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: formData.get('name'),
+                        email: formData.get('email'),
+                        municipality: formData.get('municipality'),
+                        education: formData.get('education')
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Éxito
+                    button.textContent = '¡Registro Exitoso!';
+                    button.style.background = 'linear-gradient(135deg, #1c6b50, #8d4a5b)';
+                    
+                    // Mostrar mensaje de éxito
+                    showNotification('¡Bienvenido a AprendIA Chiapas! Tu registro fue exitoso.', 'success');
+                    
+                    // Limpiar formulario
+                    this.reset();
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
+                        button.disabled = false;
+                    }, 3000);
+                } else {
+                    // Error del servidor
+                    throw new Error(result.message || 'Error en el registro');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Mostrar error
+                button.textContent = 'Error en Registro';
+                button.style.background = 'linear-gradient(135deg, #ba1a1a, #8d4a5b)';
+                
+                showNotification('Error al registrar. Por favor, intenta nuevamente.', 'error');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
+                    button.disabled = false;
+                }, 3000);
+            }
+        });
+        
+        // Función para mostrar notificaciones
+        function showNotification(message, type) {
+            // Crear elemento de notificación
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            // Estilos de la notificación
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 10px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                max-width: 400px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                ${type === 'success' ? 'background: linear-gradient(135deg, #1c6b50, #8d4a5b);' : 'background: linear-gradient(135deg, #ba1a1a, #8d4a5b);'}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animar entrada
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remover después de 5 segundos
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 5000);
+        }
+
+        // Smooth scroll para navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Efecto parallax sutil
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.1}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
