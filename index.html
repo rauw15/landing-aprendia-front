@@ -1034,6 +1034,24 @@
             const originalText = button.textContent;
             const formData = new FormData(this);
             
+            // Validar campos requeridos
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const municipality = formData.get('municipality');
+            const education = formData.get('education');
+            
+            if (!name || !email || !municipality || !education) {
+                showNotification('Por favor, completa todos los campos del formulario.', 'error');
+                return;
+            }
+            
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Por favor, ingresa un email válido.', 'error');
+                return;
+            }
+            
             // Mostrar estado de carga
             button.textContent = 'Registrando...';
             button.disabled = true;
@@ -1089,9 +1107,33 @@
                         button.disabled = false;
                     }, 3000);
                 } else {
-                    // Error del servidor
+                    // Manejar errores específicos del servidor
                     console.log('❌ Error del servidor:', result);
-                    throw new Error(result.message || `Error del servidor: ${response.status}`);
+                    
+                    if (response.status === 409) {
+                        // Usuario ya existe
+                        button.textContent = 'Usuario Ya Existe';
+                        button.style.background = 'linear-gradient(135deg, #7b5733, #8d4a5b)';
+                        showNotification('Este email ya está registrado en el programa. Por favor, usa otro email.', 'error');
+                    } else if (response.status === 400) {
+                        // Datos inválidos
+                        button.textContent = 'Datos Inválidos';
+                        button.style.background = 'linear-gradient(135deg, #ba1a1a, #8d4a5b)';
+                        showNotification('Por favor, verifica que todos los campos estén correctos.', 'error');
+                    } else {
+                        // Otros errores
+                        button.textContent = 'Error en Registro';
+                        button.style.background = 'linear-gradient(135deg, #ba1a1a, #8d4a5b)';
+                        showNotification(result.message || 'Error al registrar. Por favor, intenta nuevamente.', 'error');
+                    }
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
+                        button.disabled = false;
+                    }, 3000);
+                    
+                    return; // No lanzar error, ya manejado
                 }
                 
             } catch (error) {
@@ -1161,7 +1203,23 @@
             // Crear elemento de notificación
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
-            notification.textContent = message;
+            
+            // Agregar icono según el tipo
+            let icon = '';
+            if (type === 'success') {
+                icon = '✅ ';
+            } else if (type === 'error') {
+                icon = '❌ ';
+            } else {
+                icon = 'ℹ️ ';
+            }
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.2em;">${icon}</span>
+                    <span>${message}</span>
+                </div>
+            `;
             
             // Estilos de la notificación
             notification.style.cssText = `
@@ -1173,7 +1231,7 @@
                 color: white;
                 font-weight: 500;
                 z-index: 10000;
-                max-width: 400px;
+                max-width: 450px;
                 box-shadow: 0 4px 20px rgba(0,0,0,0.2);
                 transform: translateX(100%);
                 transition: transform 0.3s ease;
@@ -1187,13 +1245,15 @@
                 notification.style.transform = 'translateX(0)';
             }, 100);
             
-            // Remover después de 5 segundos
+            // Remover después de 6 segundos (más tiempo para leer)
             setTimeout(() => {
                 notification.style.transform = 'translateX(100%)';
                 setTimeout(() => {
-                    document.body.removeChild(notification);
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
                 }, 300);
-            }, 5000);
+            }, 6000);
         }
 
         // Smooth scroll para navegación
